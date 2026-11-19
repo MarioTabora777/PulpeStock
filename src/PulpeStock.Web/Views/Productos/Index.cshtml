@@ -1,0 +1,58 @@
+@model IReadOnlyList<FilaProducto>
+@{
+    ViewData["Title"] = "Productos";
+}
+<header class="encabezado">
+    <h1>Productos</h1>
+    <a class="boton" asp-action="Nuevo">Nuevo producto</a>
+</header>
+
+@if (Model.Count == 0)
+{
+    <p class="tarjeta vacio">Agregá un producto para registrar su primer conteo.</p>
+}
+else
+{
+    <div class="tarjeta tabla-contenedor">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Último conteo</th>
+                    <th scope="col">Fecha del conteo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in Model)
+                {
+                    <tr>
+                        <th scope="row">
+                            <a asp-action="Detalle" asp-route-id="@producto.Id">@producto.Nombre</a>
+                            <span class="detalle">@producto.Marca · @producto.Presentacion</span>
+                        </th>
+                        <td>
+                            @if (producto.UltimoTotal is int total)
+                            {
+                                @($"{total} unidades")
+                            }
+                            else
+                            {
+                                <span class="atenuado">Sin conteo</span>
+                            }
+                        </td>
+                        <td>
+                            @if (producto.UltimaFechaUtc is DateTime fecha)
+                            {
+                                <time datetime="@FechaConteo.EnIsoUtc(fecha)">@FechaConteo.EnHoraLocal(fecha)</time>
+                            }
+                            else
+                            {
+                                <span aria-label="Sin fecha">—</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
