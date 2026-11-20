@@ -7,7 +7,10 @@
         <h1>Historial de conteos</h1>
         <p class="detalle">Las fechas incluyen el día completo en hora de Honduras.</p>
     </div>
-    <a asp-action="Index">Ver reporte de inventario</a>
+    <div class="acciones">
+        <a asp-action="Index">Reporte de inventario</a>
+        <a asp-action="Reposicion">Reporte de reposición</a>
+    </div>
 </header>
 
 <form class="tarjeta formulario filtros" asp-action="Historial" method="get">
@@ -30,6 +33,7 @@
     </div>
     <div class="acciones">
         <button class="boton" type="submit">Consultar</button>
+        <button class="boton-secundario" type="submit" name="descargar" value="true">Descargar CSV</button>
         <a asp-action="Historial">Limpiar filtros</a>
     </div>
 </form>

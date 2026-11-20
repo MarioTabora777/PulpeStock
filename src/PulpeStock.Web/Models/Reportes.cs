@@ -36,6 +36,19 @@ public sealed class ReporteHistorial
     public IReadOnlyList<FilaHistorial> Conteos { get; set; } = [];
 }
 
+public sealed class ReporteReposicion
+{
+    [Display(Name = "Producto")]
+    [Range(1, int.MaxValue, ErrorMessage = "Seleccioná un producto válido.")]
+    public int? ProductoId { get; set; }
+
+    [ValidateNever]
+    public IReadOnlyList<SelectListItem> Opciones { get; set; } = [];
+
+    [ValidateNever]
+    public ListaReposicion Datos { get; set; } = new([], []);
+}
+
 public sealed record FilaHistorial(
     int Id, int ProductoId, string Nombre, string Marca, string Presentacion,
     int TotalUnidades, DateTime FechaUtc);

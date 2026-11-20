@@ -1,0 +1,34 @@
+@model ReporteReposicion
+@{
+    ViewData["Title"] = "Reporte de reposición";
+}
+<header class="encabezado">
+    <div>
+        <h1>Reporte de reposición</h1>
+        <p class="detalle">Según el último conteo de los productos con mínimo configurado.</p>
+    </div>
+    <div class="acciones">
+        <a asp-action="Index">Reporte de inventario</a>
+        <a asp-action="Historial">Historial de conteos</a>
+    </div>
+</header>
+
+<form class="tarjeta formulario filtros" asp-action="Reposicion" method="get">
+    <div class="campo">
+        <label asp-for="ProductoId"></label>
+        <select asp-for="ProductoId" asp-items="Model.Opciones">
+            <option value="">Todos los productos</option>
+        </select>
+        <span asp-validation-for="ProductoId" class="errores"></span>
+    </div>
+    <div class="acciones">
+        <button class="boton" type="submit">Consultar</button>
+        <button class="boton-secundario" type="submit" name="descargar" value="true">Descargar CSV</button>
+        <a asp-action="Reposicion">Limpiar filtro</a>
+    </div>
+</form>
+
+@if (ViewData.ModelState.IsValid)
+{
+    <partial name="_ListaReposicion" model="Model.Datos" />
+}

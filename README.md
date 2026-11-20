@@ -52,3 +52,11 @@ Desde **Reportes** podés consultar el último conteo de cada producto, con su m
 En **Historial de conteos** podés combinar el producto con las fechas Desde y Hasta. Las fechas incluyen el día completo en hora de Honduras. Podés dejar una fecha vacía para consultar desde el inicio o hasta el final del historial, o dejar ambas vacías para ver todos los conteos. Los resultados se ordenan del más reciente al más antiguo.
 
 Los filtros se aplican al pulsar **Consultar**. **Limpiar filtros** vuelve a la consulta completa.
+
+## Exportación de reportes
+
+Los reportes de inventario, historial y reposición permiten **Descargar CSV** con los filtros que estén seleccionados en el formulario. El archivo incluye encabezados y se guarda en UTF-8 para conservar las tildes al abrirlo en Excel. Los campos con apariencia de fórmula se exportan como texto.
+
+Desde **Reportes**, abrí **Reporte de reposición** para consultar los productos que llegaron a su mínimo y los que aún están pendientes de contar. Podés filtrar por producto. El CSV incluye la marca, presentación, último conteo, mínimo, fecha y estado. Cuando falta un conteo, la cantidad y la fecha quedan vacías y el estado indica que está pendiente.
+
+Si una consulta no tiene resultados, la descarga contiene únicamente los encabezados. Los filtros inválidos deben corregirse antes de descargar.

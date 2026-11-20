@@ -7,7 +7,10 @@
         <h1>Reporte de inventario</h1>
         <p class="detalle">Última cantidad contada por producto, con la fecha de la revisión.</p>
     </div>
-    <a asp-action="Historial">Ver historial de conteos</a>
+    <div class="acciones">
+        <a asp-action="Historial">Historial de conteos</a>
+        <a asp-action="Reposicion">Reporte de reposición</a>
+    </div>
 </header>
 
 <form class="tarjeta formulario filtros" asp-action="Index" method="get">
@@ -20,6 +23,7 @@
     </div>
     <div class="acciones">
         <button class="boton" type="submit">Consultar</button>
+        <button class="boton-secundario" type="submit" name="descargar" value="true">Descargar CSV</button>
         <a asp-action="Index">Limpiar filtro</a>
     </div>
 </form>
