@@ -1,0 +1,66 @@
+@model DetalleProducto
+@{
+    var producto = Model.Producto;
+    var ultimo = Model.Conteos.FirstOrDefault();
+    ViewData["Title"] = producto.Nombre;
+}
+<a class="volver" asp-action="Index">Volver a productos</a>
+
+<header class="encabezado">
+    <div>
+        <h1>@producto.Nombre</h1>
+        <p class="detalle">@producto.Marca · @producto.Presentacion</p>
+        @if (producto.CodigoBarras is not null)
+        {
+            <p class="detalle">Código de barras @producto.CodigoBarras</p>
+        }
+    </div>
+    <a class="boton" asp-action="Contar" asp-route-id="@producto.Id">Registrar conteo</a>
+</header>
+
+<section class="tarjeta resumen" aria-labelledby="ultimo-conteo">
+    <h2 id="ultimo-conteo">Último conteo</h2>
+    @if (ultimo is null)
+    {
+        <p>Sin conteo</p>
+    }
+    else
+    {
+        <p class="cantidad">@ultimo.TotalUnidades <span>unidades</span></p>
+        <time datetime="@FechaConteo.EnIsoUtc(ultimo.FechaUtc)">@FechaConteo.EnHoraLocal(ultimo.FechaUtc)</time>
+    }
+</section>
+
+@if (Model.Conteos.Count > 0)
+{
+    <section class="historial" aria-labelledby="historial-conteos">
+        <h2 id="historial-conteos">Historial de conteos</h2>
+        <div class="tarjeta tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Desglose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var conteo in Model.Conteos)
+                    {
+                        <tr>
+                            <td><time datetime="@FechaConteo.EnIsoUtc(conteo.FechaUtc)">@FechaConteo.EnHoraLocal(conteo.FechaUtc)</time></td>
+                            <td>@conteo.TotalUnidades</td>
+                            <td>
+                                <span>@conteo.UnidadesSueltas unidades sueltas</span>
+                                @foreach (var paquete in conteo.Paquetes)
+                                {
+                                    <span class="detalle">@paquete.Cantidad × @paquete.UnidadesPorPaquete unidades por paquete</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

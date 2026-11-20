@@ -1,0 +1,71 @@
+@model RegistroConteo
+@{
+    ViewData["Title"] = "Registrar conteo";
+    if (Model.Paquetes.Count == 0)
+    {
+        Model.Paquetes.Add(new FilaPaquete());
+    }
+}
+<a class="volver" asp-action="Detalle" asp-route-id="@Model.Producto.Id">Volver al producto</a>
+<h1>Registrar conteo</h1>
+<p class="detalle">@Model.Producto.Nombre · @Model.Producto.Marca · @Model.Producto.Presentacion</p>
+
+<form class="tarjeta formulario" asp-action="Contar" asp-route-id="@Model.Producto.Id" method="post" data-conteo>
+    <div asp-validation-summary="ModelOnly" class="errores" role="alert"></div>
+    <div class="campo">
+        <label asp-for="UnidadesSueltas"></label>
+        <input asp-for="UnidadesSueltas" type="number" min="0" max="2147483647" step="1" inputmode="numeric"
+               aria-describedby="ayuda-unidades" data-unidades />
+        <span id="ayuda-unidades" class="detalle">Ingresá el total si ya lo tenés. Si vas a desglosar paquetes, ingresá aquí solo las unidades sueltas.</span>
+        <span asp-validation-for="UnidadesSueltas" class="errores"></span>
+    </div>
+
+    <fieldset class="paquetes">
+        <legend>Paquetes cerrados <span class="atenuado">(opcional)</span></legend>
+        <div data-paquetes>
+            @for (var i = 0; i < Model.Paquetes.Count; i++)
+            {
+                <div class="fila-paquete" data-paquete>
+                    <div class="campo">
+                        <label asp-for="Paquetes[i].Cantidad" data-label="Cantidad"></label>
+                        <input asp-for="Paquetes[i].Cantidad" type="number" min="1" max="2147483647"
+                               step="1" inputmode="numeric" data-campo="Cantidad" />
+                        <span asp-validation-for="Paquetes[i].Cantidad" class="errores"></span>
+                    </div>
+                    <div class="campo">
+                        <label asp-for="Paquetes[i].UnidadesPorPaquete" data-label="UnidadesPorPaquete"></label>
+                        <input asp-for="Paquetes[i].UnidadesPorPaquete" type="number"
+                               min="1" max="2147483647" step="1" inputmode="numeric" data-campo="UnidadesPorPaquete" />
+                        <span asp-validation-for="Paquetes[i].UnidadesPorPaquete" class="errores"></span>
+                    </div>
+                    <button class="boton-secundario" type="button" data-quitar hidden>Quitar</button>
+                </div>
+            }
+        </div>
+        <button class="boton-secundario" type="button" data-agregar hidden>Agregar otro tamaño</button>
+    </fieldset>
+
+    <p class="total" data-total hidden>Total del conteo <output aria-live="polite">—</output></p>
+    <div class="acciones">
+        <button class="boton" type="submit">Guardar conteo</button>
+        <a asp-action="Detalle" asp-route-id="@Model.Producto.Id">Cancelar</a>
+    </div>
+</form>
+
+<template id="fila-paquete">
+    <div class="fila-paquete" data-paquete>
+        <div class="campo">
+            <label data-label="Cantidad">Cantidad de paquetes</label>
+            <input type="number" min="1" max="2147483647" step="1" inputmode="numeric" data-campo="Cantidad" />
+        </div>
+        <div class="campo">
+            <label data-label="UnidadesPorPaquete">Unidades por paquete</label>
+            <input type="number" min="1" max="2147483647" step="1" inputmode="numeric" data-campo="UnidadesPorPaquete" />
+        </div>
+        <button class="boton-secundario" type="button" data-quitar>Quitar</button>
+    </div>
+</template>
+
+@section Scripts {
+    <script src="~/js/conteo.js" asp-append-version="true" defer></script>
+}
