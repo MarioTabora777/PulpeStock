@@ -14,4 +14,7 @@ public static class FechaConteo
 
     public static string EnIsoUtc(DateTime fechaUtc) =>
         DateTime.SpecifyKind(fechaUtc, DateTimeKind.Utc).ToString("O", CultureInfo.InvariantCulture);
+
+    public static DateTime InicioDelDiaUtc(DateOnly fecha) =>
+        TimeZoneInfo.ConvertTimeToUtc(fecha.ToDateTime(TimeOnly.MinValue), ZonaPulperia);
 }

@@ -1,0 +1,66 @@
+@model ReporteHistorial
+@{
+    ViewData["Title"] = "Historial de conteos";
+}
+<header class="encabezado">
+    <div>
+        <h1>Historial de conteos</h1>
+        <p class="detalle">Las fechas incluyen el día completo en hora de Honduras.</p>
+    </div>
+    <a asp-action="Index">Ver reporte de inventario</a>
+</header>
+
+<form class="tarjeta formulario filtros" asp-action="Historial" method="get">
+    <div class="campo">
+        <label asp-for="ProductoId"></label>
+        <select asp-for="ProductoId" asp-items="Model.Opciones">
+            <option value="">Todos los productos</option>
+        </select>
+        <span asp-validation-for="ProductoId" class="errores"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Desde"></label>
+        <input asp-for="Desde" type="date" asp-format="{0:yyyy-MM-dd}" />
+        <span asp-validation-for="Desde" class="errores"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Hasta"></label>
+        <input asp-for="Hasta" type="date" asp-format="{0:yyyy-MM-dd}" />
+        <span asp-validation-for="Hasta" class="errores"></span>
+    </div>
+    <div class="acciones">
+        <button class="boton" type="submit">Consultar</button>
+        <a asp-action="Historial">Limpiar filtros</a>
+    </div>
+</form>
+
+@if (ViewData.ModelState.IsValid)
+{
+    @if (Model.Conteos.Count == 0)
+    {
+        <p class="tarjeta vacio">No hay conteos para los filtros seleccionados.</p>
+    }
+    else
+    {
+        <div class="tarjeta tabla-contenedor">
+            <table>
+                <thead>
+                    <tr><th scope="col">Fecha del conteo</th><th scope="col">Producto</th><th scope="col">Cantidad contada</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var conteo in Model.Conteos)
+                    {
+                        <tr data-conteo="@conteo.Id">
+                            <td><time datetime="@FechaConteo.EnIsoUtc(conteo.FechaUtc)">@FechaConteo.EnHoraLocal(conteo.FechaUtc)</time></td>
+                            <th scope="row">
+                                <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@conteo.ProductoId">@conteo.Nombre</a>
+                                <span class="detalle">@conteo.Marca · @conteo.Presentacion</span>
+                            </th>
+                            <td>@conteo.TotalUnidades unidades</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}

@@ -44,3 +44,11 @@ Desde la ficha de un producto, abrí **Configurar mínimo** e ingresá la cantid
 La opción **Reposición** muestra los productos cuyo último conteo es igual o menor a su mínimo. Por ejemplo, un mínimo de tres bolsas incluye conteos de tres, dos, una o cero bolsas. La fecha permite ver cuándo se verificó la cantidad. Los productos con mínimo que todavía requieren su primer conteo aparecen como pendientes de contar.
 
 Al iniciar, la aplicación actualiza las bases existentes con la nueva columna de mínimo. Los conteos anteriores siguen disponibles.
+
+## Consulta de reportes
+
+Desde **Reportes** podés consultar el último conteo de cada producto, con su marca, presentación y fecha. El selector permite consultar un producto específico. Los productos que todavía requieren una primera revisión muestran **Sin conteo**.
+
+En **Historial de conteos** podés combinar el producto con las fechas Desde y Hasta. Las fechas incluyen el día completo en hora de Honduras. Podés dejar una fecha vacía para consultar desde el inicio o hasta el final del historial, o dejar ambas vacías para ver todos los conteos. Los resultados se ordenan del más reciente al más antiguo.
+
+Los filtros se aplican al pulsar **Consultar**. **Limpiar filtros** vuelve a la consulta completa.

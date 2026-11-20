@@ -15,14 +15,14 @@
 [hidden] { display: none !important; }
 body { margin: 0; }
 a { color: var(--verde); text-underline-offset: .2em; }
-a:focus-visible, button:focus-visible, input:focus-visible {
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
     outline: 3px solid #316949;
     outline-offset: 3px;
 }
 
 .contenedor { width: min(100% - 2rem, 62rem); margin-inline: auto; }
 .cabecera { background: var(--verde-oscuro); color: #fff; }
-.navegacion { min-height: 4rem; display: flex; gap: 2rem; align-items: center; }
+.navegacion { min-height: 4rem; display: flex; flex-wrap: wrap; gap: .5rem 2rem; align-items: center; padding-block: .75rem; }
 .navegacion a { color: #fff; }
 .navegacion a:focus-visible { outline-color: #fff; }
 .nombre-app { text-decoration: none; font-size: 1.2rem; font-weight: 750; }
@@ -55,7 +55,7 @@ tbody tr { border-top: 1px solid var(--borde); }
 .campo { display: grid; align-content: start; gap: .3rem; margin-bottom: 1rem; }
 label, legend { font-weight: 650; }
 label .atenuado, legend .atenuado { font-weight: 400; }
-input {
+input, select {
     width: 100%;
     min-height: 2.65rem;
     font: inherit;
@@ -90,6 +90,7 @@ input {
 .errores:empty, .validation-summary-valid { display: none; }
 .validation-summary-errors ul { margin-block: 0 1rem; padding-inline-start: 1.25rem; }
 .input-validation-error { border-color: var(--error); }
+.filtros { margin-bottom: 1.5rem; }
 
 @media (max-width: 36rem) {
     .navegacion { gap: 1.25rem; }
