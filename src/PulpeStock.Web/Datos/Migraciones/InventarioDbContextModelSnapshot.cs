@@ -52,6 +52,9 @@ namespace PulpeStock.Web.Datos.Migraciones
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("ExistenciaMinima")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Marca")
                         .IsRequired()
                         .HasMaxLength(80)

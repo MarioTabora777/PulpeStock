@@ -101,6 +101,117 @@ public sealed class FlujoConteoTests
         Assert.Contains("Sin conteo", await cliente.GetStringAsync(producto));
     }
 
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(2, true)]
+    [InlineData(3, true)]
+    [InlineData(4, false)]
+    public async Task ComparaElUltimoConteoConElMinimoPorMarca(int cantidad, bool requiereReposicion)
+    {
+        using var app = new AplicacionPruebas();
+        using var cliente = app.CrearCliente();
+        var marcaA = await RegistrarProducto(cliente, "Marca A");
+        var marcaB = await RegistrarProducto(cliente, "Marca B");
+        var rutaMinimo = new Uri(marcaA.OriginalString.Replace("/Productos/Detalle/", "/Reposicion/Minimo/"), UriKind.Relative);
+
+        using var minimo = await EnviarFormulario(cliente, rutaMinimo,
+            new Dictionary<string, string> { ["ExistenciaMinima"] = "3" });
+        Assert.Equal(HttpStatusCode.Redirect, minimo.StatusCode);
+
+        using var conteo = await EnviarFormulario(cliente, RutaConteo(marcaA),
+            new Dictionary<string, string> { ["UnidadesSueltas"] = cantidad.ToString() });
+        Assert.Equal(HttpStatusCode.Redirect, conteo.StatusCode);
+
+        var reposicion = await cliente.GetStringAsync("/Reposicion");
+        var id = marcaA.OriginalString.Split('/').Last();
+        Assert.Equal(requiereReposicion, reposicion.Contains($"data-producto=\"{id}\""));
+        Assert.DoesNotContain("Marca B", reposicion);
+        if (requiereReposicion)
+        {
+            Assert.Contains("<time datetime=", reposicion);
+        }
+
+        using var nuevoConteo = await EnviarFormulario(cliente, RutaConteo(marcaA),
+            new Dictionary<string, string> { ["UnidadesSueltas"] = "10" });
+        Assert.Equal(HttpStatusCode.Redirect, nuevoConteo.StatusCode);
+        Assert.DoesNotContain($"data-producto=\"{id}\"", await cliente.GetStringAsync("/Reposicion"));
+
+        await using var scope = app.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<InventarioDbContext>();
+        Assert.Equal(2, await db.Conteos.CountAsync());
+        Assert.Null((await db.Productos.SingleAsync(producto => producto.Marca == "Marca B")).ExistenciaMinima);
+    }
+
+    [Fact]
+    public async Task PermiteDesactivarElMinimoYConservaLosConteos()
+    {
+        using var app = new AplicacionPruebas();
+        using var cliente = app.CrearCliente();
+        var producto = await RegistrarProducto(cliente, "Marca A");
+        var rutaMinimo = new Uri(producto.OriginalString.Replace("/Productos/Detalle/", "/Reposicion/Minimo/"), UriKind.Relative);
+        using var minimo = await EnviarFormulario(cliente, rutaMinimo,
+            new Dictionary<string, string> { ["ExistenciaMinima"] = "0" });
+        Assert.Equal(HttpStatusCode.Redirect, minimo.StatusCode);
+
+        var pendientes = await cliente.GetStringAsync("/Reposicion");
+        Assert.Contains("data-pendiente=", pendientes);
+        Assert.DoesNotContain("data-producto=", pendientes);
+
+        using var conteo = await EnviarFormulario(cliente, RutaConteo(producto),
+            new Dictionary<string, string> { ["UnidadesSueltas"] = "0" });
+        Assert.Equal(HttpStatusCode.Redirect, conteo.StatusCode);
+        Assert.Contains("data-producto=", await cliente.GetStringAsync("/Reposicion"));
+
+        using var desactivar = await EnviarFormulario(cliente, rutaMinimo,
+            new Dictionary<string, string> { ["ExistenciaMinima"] = "" });
+        Assert.Equal(HttpStatusCode.Redirect, desactivar.StatusCode);
+        var reposicion = await cliente.GetStringAsync("/Reposicion");
+        Assert.DoesNotContain("data-producto=", reposicion);
+        Assert.DoesNotContain("data-pendiente=", reposicion);
+        Assert.Contains("0 <span>unidades</span>", await cliente.GetStringAsync(producto));
+
+        await using var scope = app.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<InventarioDbContext>();
+        Assert.Null((await db.Productos.SingleAsync()).ExistenciaMinima);
+        Assert.Equal(1, await db.Conteos.CountAsync());
+    }
+
+    [Theory]
+    [InlineData("-1")]
+    [InlineData("1.5")]
+    [InlineData("2147483648")]
+    public async Task RechazaMinimosInvalidosSinReemplazarElValorGuardado(string cantidad)
+    {
+        using var app = new AplicacionPruebas();
+        using var cliente = app.CrearCliente();
+        var producto = await RegistrarProducto(cliente, "Marca A");
+        var rutaMinimo = new Uri(producto.OriginalString.Replace("/Productos/Detalle/", "/Reposicion/Minimo/"), UriKind.Relative);
+        using var inicial = await EnviarFormulario(cliente, rutaMinimo,
+            new Dictionary<string, string> { ["ExistenciaMinima"] = "3" });
+        Assert.Equal(HttpStatusCode.Redirect, inicial.StatusCode);
+
+        using var invalido = await EnviarFormulario(cliente, rutaMinimo,
+            new Dictionary<string, string> { ["ExistenciaMinima"] = cantidad });
+        Assert.Equal(HttpStatusCode.OK, invalido.StatusCode);
+        Assert.Contains("field-validation-error", await invalido.Content.ReadAsStringAsync());
+
+        await using var scope = app.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<InventarioDbContext>();
+        Assert.Equal(3, (await db.Productos.SingleAsync()).ExistenciaMinima);
+    }
+
+    [Fact]
+    public async Task ExigeTokenAlGuardarUnMinimo()
+    {
+        using var app = new AplicacionPruebas();
+        using var cliente = app.CrearCliente();
+        using var campos = new FormUrlEncodedContent(new Dictionary<string, string> { ["ExistenciaMinima"] = "3" });
+        using var respuesta = await cliente.PostAsync("/Reposicion/Minimo/1", campos);
+        Assert.Equal(HttpStatusCode.BadRequest, respuesta.StatusCode);
+        using var desconocido = await cliente.GetAsync("/Reposicion/Minimo/999");
+        Assert.Equal(HttpStatusCode.NotFound, desconocido.StatusCode);
+    }
+
     private static async Task<Uri> RegistrarProducto(HttpClient cliente, string marca)
     {
         using var respuesta = await EnviarFormulario(cliente, new Uri("/Productos/Nuevo", UriKind.Relative),

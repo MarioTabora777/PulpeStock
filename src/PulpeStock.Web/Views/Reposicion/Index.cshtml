@@ -1,0 +1,73 @@
+@model ListaReposicion
+@{
+    ViewData["Title"] = "Reposición";
+}
+<header class="encabezado">
+    <div>
+        <h1>Reposición</h1>
+        <p class="detalle">Según el último conteo de los productos con mínimo configurado.</p>
+    </div>
+    <a asp-controller="Productos" asp-action="Index">Configurar mínimos desde productos</a>
+</header>
+
+<h2>Por reponer</h2>
+@if (Model.PorReponer.Count == 0)
+{
+    <p class="tarjeta vacio">Ningún producto requiere reposición según los conteos y mínimos registrados.</p>
+}
+else
+{
+    <div class="tarjeta tabla-contenedor">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Último conteo</th>
+                    <th scope="col">Mínimo</th>
+                    <th scope="col">Fecha del conteo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in Model.PorReponer)
+                {
+                    <tr data-producto="@producto.Id">
+                        <th scope="row">
+                            <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@producto.Id">@producto.Nombre</a>
+                            <span class="detalle">@producto.Marca · @producto.Presentacion</span>
+                        </th>
+                        <td>@producto.UltimoTotal unidades</td>
+                        <td>@producto.Minimo unidades</td>
+                        <td><time datetime="@FechaConteo.EnIsoUtc(producto.UltimaFechaUtc!.Value)">@FechaConteo.EnHoraLocal(producto.UltimaFechaUtc.Value)</time></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Model.PendientesDeConteo.Count > 0)
+{
+    <section class="historial" aria-labelledby="pendientes-conteo">
+        <h2 id="pendientes-conteo">Pendientes de contar</h2>
+        <div class="tarjeta tabla-contenedor">
+            <table>
+                <thead>
+                    <tr><th scope="col">Producto</th><th scope="col">Mínimo</th><th scope="col">Conteo</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model.PendientesDeConteo)
+                    {
+                        <tr data-pendiente="@producto.Id">
+                            <th scope="row">
+                                <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@producto.Id">@producto.Nombre</a>
+                                <span class="detalle">@producto.Marca · @producto.Presentacion</span>
+                            </th>
+                            <td>@producto.Minimo unidades</td>
+                            <td><a asp-controller="Productos" asp-action="Contar" asp-route-id="@producto.Id">Registrar primer conteo</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

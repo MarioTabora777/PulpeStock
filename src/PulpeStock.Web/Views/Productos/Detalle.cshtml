@@ -31,6 +31,23 @@
     }
 </section>
 
+<section class="tarjeta resumen historial" aria-labelledby="minimo-producto">
+    <h2 id="minimo-producto">Mínimo para reposición</h2>
+    @if (producto.ExistenciaMinima is int minimo)
+    {
+        <p>@minimo unidades</p>
+        @if (ultimo is not null && ultimo.TotalUnidades <= minimo)
+        {
+            <p>Por reponer según el último conteo.</p>
+        }
+    }
+    else
+    {
+        <p>Sin mínimo configurado</p>
+    }
+    <a asp-controller="Reposicion" asp-action="Minimo" asp-route-id="@producto.Id">Configurar mínimo</a>
+</section>
+
 @if (Model.Conteos.Count > 0)
 {
     <section class="historial" aria-labelledby="historial-conteos">
