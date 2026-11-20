@@ -1,0 +1,22 @@
+@model ConfiguracionMinimo
+@{
+    ViewData["Title"] = "Configurar mínimo";
+}
+<a class="volver" asp-controller="Productos" asp-action="Detalle" asp-route-id="@Model.Producto.Id">Volver al producto</a>
+<h1>Configurar mínimo</h1>
+<p class="detalle">@Model.Producto.Nombre · @Model.Producto.Marca · @Model.Producto.Presentacion</p>
+
+<form class="tarjeta formulario" asp-action="Minimo" asp-route-id="@Model.Producto.Id" method="post">
+    <div asp-validation-summary="ModelOnly" class="errores" role="alert"></div>
+    <div class="campo">
+        <label asp-for="ExistenciaMinima"></label>
+        <input asp-for="ExistenciaMinima" type="number" min="0" max="2147483647" step="1" inputmode="numeric"
+               aria-describedby="ayuda-minimo" />
+        <span id="ayuda-minimo" class="detalle">El aviso aparece si el último conteo es igual o menor a esta cantidad. Dejá el campo vacío para desactivarlo.</span>
+        <span asp-validation-for="ExistenciaMinima" class="errores"></span>
+    </div>
+    <div class="acciones">
+        <button class="boton" type="submit">Guardar mínimo</button>
+        <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@Model.Producto.Id">Cancelar</a>
+    </div>
+</form>

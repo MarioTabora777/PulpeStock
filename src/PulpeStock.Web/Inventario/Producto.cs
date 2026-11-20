@@ -17,5 +17,16 @@ public sealed class Producto
     public string Marca { get; private set; } = null!;
     public string Presentacion { get; private set; } = null!;
     public string? CodigoBarras { get; private set; }
+    public int? ExistenciaMinima { get; private set; }
     public ICollection<ConteoInventario> Conteos { get; } = new List<ConteoInventario>();
+
+    public void ConfigurarMinimo(int? cantidad)
+    {
+        if (cantidad.HasValue)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(cantidad.Value);
+        }
+
+        ExistenciaMinima = cantidad;
+    }
 }

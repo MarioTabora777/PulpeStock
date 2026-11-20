@@ -36,3 +36,11 @@ Las pruebas unitarias cubren el cálculo de cantidades. Las pruebas de integraci
 - `src/PulpeStock.Web` contiene la aplicación ASP.NET Core MVC, las reglas de conteo y la persistencia con EF Core.
 - `tests/PulpeStock.Tests` contiene las pruebas unitarias y de integración.
 - `.github/workflows/ci.yml` define la compilación y las pruebas en GitHub Actions.
+
+## Mínimos y reposición
+
+Desde la ficha de un producto, abrí **Configurar mínimo** e ingresá la cantidad de unidades que indica que hace falta reponer. Dejá el campo vacío para desactivar el aviso.
+
+La opción **Reposición** muestra los productos cuyo último conteo es igual o menor a su mínimo. Por ejemplo, un mínimo de tres bolsas incluye conteos de tres, dos, una o cero bolsas. La fecha permite ver cuándo se verificó la cantidad. Los productos con mínimo que todavía requieren su primer conteo aparecen como pendientes de contar.
+
+Al iniciar, la aplicación actualiza las bases existentes con la nueva columna de mínimo. Los conteos anteriores siguen disponibles.
