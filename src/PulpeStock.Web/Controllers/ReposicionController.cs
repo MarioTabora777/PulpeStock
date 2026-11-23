@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PulpeStock.Web.Datos;
 using PulpeStock.Web.Models;
+using PulpeStock.Web.Reportes;
 
 namespace PulpeStock.Web.Controllers;
 
@@ -9,22 +10,7 @@ public sealed class ReposicionController(InventarioDbContext db) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var productos = await db.Productos.AsNoTracking()
-            .Where(producto => producto.ExistenciaMinima.HasValue)
-            .OrderBy(producto => producto.Nombre).ThenBy(producto => producto.Marca)
-            .ThenBy(producto => producto.Presentacion)
-            .Select(producto => new FilaReposicion(
-                producto.Id, producto.Nombre, producto.Marca, producto.Presentacion,
-                producto.ExistenciaMinima!.Value,
-                producto.Conteos.OrderByDescending(conteo => conteo.FechaUtc).ThenByDescending(conteo => conteo.Id)
-                    .Select(conteo => (int?)conteo.TotalUnidades).FirstOrDefault(),
-                producto.Conteos.OrderByDescending(conteo => conteo.FechaUtc).ThenByDescending(conteo => conteo.Id)
-                    .Select(conteo => (DateTime?)conteo.FechaUtc).FirstOrDefault()))
-            .ToListAsync(cancellationToken);
-
-        return View(new ListaReposicion(
-            productos.Where(producto => producto.UltimoTotal <= producto.Minimo).ToList(),
-            productos.Where(producto => producto.UltimoTotal is null).ToList()));
+        return View(await ConsultaReposicion.Obtener(db, cancellationToken));
     }
 
     [HttpGet]
