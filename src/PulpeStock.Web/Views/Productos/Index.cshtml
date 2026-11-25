@@ -1,4 +1,4 @@
-@model IReadOnlyList<FilaProducto>
+@model ListadoProductos
 @{
     ViewData["Title"] = "Productos";
 }
@@ -7,11 +7,20 @@
     <a class="boton" asp-action="Nuevo">Nuevo producto</a>
 </header>
 
-@if (Model.Count == 0)
+<form class="tarjeta formulario filtros" asp-action="Index" method="get">
+    <div class="campo">
+        <label asp-for="Estado"></label>
+        <select asp-for="Estado" asp-items="Html.GetEnumSelectList<EstadoProductos>()"></select>
+        <span asp-validation-for="Estado" class="errores"></span>
+    </div>
+    <button class="boton" type="submit">Consultar</button>
+</form>
+
+@if (ViewData.ModelState.IsValid && Model.Productos.Count == 0)
 {
-    <p class="tarjeta vacio">Agregá un producto para registrar su primer conteo.</p>
+    <p class="tarjeta vacio">No hay productos para el estado seleccionado.</p>
 }
-else
+else if (ViewData.ModelState.IsValid)
 {
     <div class="tarjeta tabla-contenedor">
         <table>
@@ -23,12 +32,16 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var producto in Model)
+                @foreach (var producto in Model.Productos)
                 {
-                    <tr>
+                    <tr data-producto="@producto.Id">
                         <th scope="row">
                             <a asp-action="Detalle" asp-route-id="@producto.Id">@producto.Nombre</a>
                             <span class="detalle">@producto.Marca · @producto.Presentacion</span>
+                            @if (!producto.Activo)
+                            {
+                                <span class="detalle">Inactivo</span>
+                            }
                         </th>
                         <td>
                             @if (producto.UltimoTotal is int total)

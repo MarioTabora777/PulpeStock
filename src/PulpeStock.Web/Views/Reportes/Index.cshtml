@@ -48,6 +48,10 @@
                             <th scope="row">
                                 <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@producto.Id">@producto.Nombre</a>
                                 <span class="detalle">@producto.Marca · @producto.Presentacion</span>
+                                @if (!producto.Activo)
+                                {
+                                    <span class="detalle">Inactivo</span>
+                                }
                             </th>
                             <td>
                                 @if (producto.UltimoTotal is int total)

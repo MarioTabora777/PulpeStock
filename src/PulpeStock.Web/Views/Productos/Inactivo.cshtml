@@ -1,0 +1,8 @@
+@model PulpeStock.Web.Inventario.Producto
+@{
+    ViewData["Title"] = "Producto inactivo";
+}
+<h1>Producto inactivo</h1>
+<p class="detalle">@Model.Nombre · @Model.Marca · @Model.Presentacion</p>
+<p>Reactivá el producto desde su ficha para registrar nuevos conteos.</p>
+<a asp-action="Detalle" asp-route-id="@Model.Id">Volver al producto</a>

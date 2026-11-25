@@ -36,7 +36,7 @@ public sealed class ReportesController(InventarioDbContext db) : Controller
                 producto.Conteos.OrderByDescending(conteo => conteo.FechaUtc).ThenByDescending(conteo => conteo.Id)
                     .Select(conteo => (int?)conteo.TotalUnidades).FirstOrDefault(),
                 producto.Conteos.OrderByDescending(conteo => conteo.FechaUtc).ThenByDescending(conteo => conteo.Id)
-                    .Select(conteo => (DateTime?)conteo.FechaUtc).FirstOrDefault()))
+                    .Select(conteo => (DateTime?)conteo.FechaUtc).FirstOrDefault(), producto.Activo))
             .ToListAsync(cancellationToken);
 
         if (descargar)
@@ -152,7 +152,8 @@ public sealed class ReportesController(InventarioDbContext db) : Controller
             .OrderBy(producto => producto.Nombre).ThenBy(producto => producto.Marca)
             .ThenBy(producto => producto.Presentacion).ThenBy(producto => producto.Id)
             .Select(producto => new SelectListItem(
-                producto.Nombre + " · " + producto.Marca + " · " + producto.Presentacion, producto.Id.ToString()))
+                producto.Nombre + " · " + producto.Marca + " · " + producto.Presentacion
+                    + (producto.Activo ? string.Empty : " (inactivo)"), producto.Id.ToString()))
             .ToListAsync(cancellationToken);
 
     private void ValidarProducto(int? productoId, IReadOnlyList<SelectListItem> opciones)

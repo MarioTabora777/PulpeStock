@@ -60,3 +60,13 @@ Los reportes de inventario, historial y reposición permiten **Descargar CSV** c
 Desde **Reportes**, abrí **Reporte de reposición** para consultar los productos que llegaron a su mínimo y los que aún están pendientes de contar. Podés filtrar por producto. El CSV incluye la marca, presentación, último conteo, mínimo, fecha y estado. Cuando falta un conteo, la cantidad y la fecha quedan vacías y el estado indica que está pendiente.
 
 Si una consulta no tiene resultados, la descarga contiene únicamente los encabezados. Los filtros inválidos deben corregirse antes de descargar.
+
+## Mantenimiento de productos
+
+Desde la ficha de cada producto, **Editar producto** permite corregir nombre, marca, presentación y código de barras. El código es opcional y debe ser único, incluso si pertenece a un producto inactivo. La edición conserva el identificador del producto, su mínimo y todos sus conteos.
+
+**Desactivar producto** lo retira del listado de activos y de la reposición. Su ficha y el historial siguen disponibles. En **Productos**, el filtro de estado permite consultar activos, inactivos o todos.
+
+Para volver a registrar conteos de un producto inactivo, abrí su ficha y elegí **Reactivar producto**. La reactivación recupera el mismo producto con su mínimo e historial. Los reportes de inventario e historial permiten seguir consultando los productos inactivos.
+
+La migración de este avance deja activos los productos existentes y conserva sus datos.

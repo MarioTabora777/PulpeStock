@@ -1,0 +1,22 @@
+@model DatosProducto
+    <div asp-validation-summary="ModelOnly" class="errores" role="alert"></div>
+    <div class="campo">
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" maxlength="100" required />
+        <span asp-validation-for="Nombre" class="errores"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Marca"></label>
+        <input asp-for="Marca" maxlength="80" required />
+        <span asp-validation-for="Marca" class="errores"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="Presentacion"></label>
+        <input asp-for="Presentacion" maxlength="80" placeholder="Ej. Bolsa de 1 libra" required />
+        <span asp-validation-for="Presentacion" class="errores"></span>
+    </div>
+    <div class="campo">
+        <label asp-for="CodigoBarras">Código de barras <span class="atenuado">(opcional)</span></label>
+        <input asp-for="CodigoBarras" maxlength="40" inputmode="numeric" />
+        <span asp-validation-for="CodigoBarras" class="errores"></span>
+    </div>
