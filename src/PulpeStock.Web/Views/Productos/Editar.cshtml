@@ -1,0 +1,14 @@
+@model DatosProducto
+@{
+    ViewData["Title"] = "Editar producto";
+    var id = ViewContext.RouteData.Values["id"];
+}
+<a class="volver" asp-action="Detalle" asp-route-id="@id">Volver al producto</a>
+<h1>Editar producto</h1>
+<form class="tarjeta formulario" asp-action="Editar" asp-route-id="@id" method="post">
+    <partial name="_DatosProducto" model="Model" />
+    <div class="acciones">
+        <button class="boton" type="submit">Guardar cambios</button>
+        <a asp-action="Detalle" asp-route-id="@id">Cancelar</a>
+    </div>
+</form>

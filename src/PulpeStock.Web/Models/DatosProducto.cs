@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PulpeStock.Web.Models;
 
-public sealed class AltaProducto
+public sealed class DatosProducto
 {
     [Required(ErrorMessage = "Ingresá el nombre del producto.")]
     [StringLength(100, ErrorMessage = "Usá hasta 100 caracteres.")]

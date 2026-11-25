@@ -16,6 +16,7 @@ public sealed class InventarioDbContext(DbContextOptions<InventarioDbContext> op
         producto.Property(p => p.Marca).HasMaxLength(80);
         producto.Property(p => p.Presentacion).HasMaxLength(80);
         producto.Property(p => p.CodigoBarras).HasMaxLength(40);
+        producto.Property(p => p.Activo).HasDefaultValue(true);
         producto.HasIndex(p => p.CodigoBarras).IsUnique();
         producto.HasMany(p => p.Conteos).WithOne().HasForeignKey(c => c.ProductoId);
 

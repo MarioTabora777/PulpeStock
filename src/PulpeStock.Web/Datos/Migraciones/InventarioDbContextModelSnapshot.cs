@@ -48,6 +48,11 @@ namespace PulpeStock.Web.Datos.Migraciones
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Activo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("CodigoBarras")
                         .HasMaxLength(40)
                         .HasColumnType("TEXT");

@@ -6,6 +6,11 @@ public sealed class Producto
 
     public Producto(string nombre, string marca, string presentacion, string? codigoBarras)
     {
+        ActualizarDatos(nombre, marca, presentacion, codigoBarras);
+    }
+
+    public void ActualizarDatos(string nombre, string marca, string presentacion, string? codigoBarras)
+    {
         Nombre = nombre.Trim();
         Marca = marca.Trim();
         Presentacion = presentacion.Trim();
@@ -18,7 +23,10 @@ public sealed class Producto
     public string Presentacion { get; private set; } = null!;
     public string? CodigoBarras { get; private set; }
     public int? ExistenciaMinima { get; private set; }
+    public bool Activo { get; private set; } = true;
     public ICollection<ConteoInventario> Conteos { get; } = new List<ConteoInventario>();
+
+    public void EstablecerEstado(bool activo) => Activo = activo;
 
     public void ConfigurarMinimo(int? cantidad)
     {

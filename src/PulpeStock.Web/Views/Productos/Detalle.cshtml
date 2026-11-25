@@ -15,10 +15,24 @@
             <p class="detalle">Código de barras @producto.CodigoBarras</p>
         }
     </div>
-    <a class="boton" asp-action="Contar" asp-route-id="@producto.Id">Registrar conteo</a>
+    <div class="acciones">
+        <a asp-action="Editar" asp-route-id="@producto.Id">Editar producto</a>
+        @if (producto.Activo)
+        {
+            <a class="boton" asp-action="Contar" asp-route-id="@producto.Id">Registrar conteo</a>
+        }
+    </div>
 </header>
 
-<section class="tarjeta resumen" aria-labelledby="ultimo-conteo">
+<section class="tarjeta resumen" aria-labelledby="estado-producto">
+    <h2 id="estado-producto">Estado del producto</h2>
+    <p>@(producto.Activo ? "Activo" : "Inactivo")</p>
+    <form asp-action="@(producto.Activo ? "Desactivar" : "Reactivar")" asp-route-id="@producto.Id" method="post">
+        <button class="boton-secundario" type="submit">@(producto.Activo ? "Desactivar producto" : "Reactivar producto")</button>
+    </form>
+</section>
+
+<section class="tarjeta resumen historial" aria-labelledby="ultimo-conteo">
     <h2 id="ultimo-conteo">Último conteo</h2>
     @if (ultimo is null)
     {
@@ -36,7 +50,7 @@
     @if (producto.ExistenciaMinima is int minimo)
     {
         <p>@minimo unidades</p>
-        @if (ultimo is not null && ultimo.TotalUnidades <= minimo)
+        @if (producto.Activo && ultimo is not null && ultimo.TotalUnidades <= minimo)
         {
             <p>Por reponer según el último conteo.</p>
         }

@@ -10,7 +10,7 @@ public static class ConsultaReposicion
         InventarioDbContext db, CancellationToken cancellationToken, int? productoId = null)
     {
         var consulta = db.Productos.AsNoTracking()
-            .Where(producto => producto.ExistenciaMinima.HasValue);
+            .Where(producto => producto.Activo && producto.ExistenciaMinima.HasValue);
         if (productoId.HasValue)
         {
             consulta = consulta.Where(producto => producto.Id == productoId.Value);
